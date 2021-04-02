@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Shopping</title>         
+        <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="../fontawesome-free-5.15.1-web/css/all.css">
+        <script src="../node_modules/jquery/dist/jquery.js"></script>
+        <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+        <script>
+            var categories = ["Select Category", "Electronics", "Footwear", "Fashion"];
+            var electronics = ["Select Electronics", "JBL Speaker", "Earpods"];
+            var footwear = ["Select Footwear", "Nike Casuals", "Lee Cooper Boot"];
+            var fashion = ["Select Fashion", "Shirt", "Jeans"];  
+                       var products = [];             
+                       var data = [
+                {Name: "JBL Speaker", Price: 4500.54, Photo:"Image/speaker.jpg"},                 
+                {Name: "Earpods", Price: 3500.54, Photo:"Image/earpods.jpg"},                 
+                {Name: "Nike Casuals", Price: 6500.54, Photo:"Image/shoe.jpg"},                 
+                {Name: "Lee Cooper Boot", Price: 3500.54, Photo:"Image/shoe1.jpg"},                 
+                {Name: "Shirt", Price: 2500.54, Photo:"Image/shirt.jpg"},                 
+                {Name: "Jeans", Price: 1500.54, Photo: "Image/jeans.jpg"},
+            ]
+            function bodyload(){                 
+                var lstCategories = document.getElementById("lstCategories");                 
+                for(var item of categories) {
+                    var opt = document.createElement("option");                     
+                    opt.text = item;                     
+                    opt.value = item;
+                    lstCategories.appendChild(opt);
+                }
+                GetCount();
+            }
+            function AddProducts(){                 var lstProducts = document.getElementById("lstProducts");                 lstProducts.innerHTML="";                 for(var item of products){
+                    var opt = document.createElement("option");                     opt.text = item;                     opt.value = item;
+                    lstProducts.appendChild(opt);
+                }
+            }
+            function CategoryChanged(){                 var categoryName = document.getElementById("lstCategories").value;                 switch(categoryName) {                     case "Electronics": 
+                     products = electronics;
+                     AddProducts();                      break;                     case "Footwear":                      products = footwear;
+                     AddProducts();                      break;                     case "Fashion":                      products = fashion;
+                     AddProducts();                      break;                     default: 
+                     products = ["Select a Category"];
+                     AddProducts();                      break;
+                }
+            }
+            var searchedProduct;             function ProductChanged(){                 var productName = document.getElementById("lstProducts").value;
+                searchedProduct = data.find(function(product){return product.Name==productName});
+                document.getElementById("lblName").innerHTML = searchedProduct.Name;
+                document.getElementById("lblPrice").innerHTML = 
+"&#8377;" +  searchedProduct.Price;
+                document.getElementById("imgProduct").src = searchedProduct.Photo;
+            }
+            var cartItems = [];             
+            function GetCount(){
+                document.getElementById("lblCount").innerHTML = cartItems.length;
+            }             
+            var btn;
+            function AddCartItemsToTable(){
+                var tbody = document.getElementById("tbody");                
+                  tbody.innerHTML="";                 
+                  for(var item of cartItems){
+                    var row = document.createElement("tr"); 
+                    var cell1 = document.createElement("td");
+                    var cell2 = document.createElement("td");                    
+                    var cell3 = document.createElement("td");                     
+                    var cell4 = document.createElement("td");
+                    cell1.innerHTML = item.Name;                     
+                    cell2.innerHTML = item.Price;
+                    var img = document.createElement("img");                    
+                     img.src = item.Photo;                     
+                     img.width=50;
+                    img.height=50;                     
+                    cell3.appendChild(img);
+                    btn = document.createElement("button");
+                     btn.innerHTML = "<span class='fa fa-trash'></span>";
+                    cell4.appendChild(btn);
+                    row.appendChild(cell1);                     
+                    row.appendChild(cell2);                     
+                    row.appendChild(cell3);                     
+                    row.appendChild(cell4);
+                    tbody.appendChild(row);
+                }
+            }
+           
+            function AddToCartClick(){                 
+                cartItems.push(searchedProduct);                
+                 alert("Item Added to Your Cart");
+                GetCount();
+                AddCartItemsToTable();
+            }
+          
+        </script>
+    </head>
+    <body class="container-fluid" onload="bodyload()">
+      <header>
+          <h1 class="text-center bg-danger text-white"> <span class="fa fa-shopping-cart"></span> Amazon Shopping</h1>
+      </header>
+      <section>
+          <div class="row">
+            <div class="col-3">
+                <div class="form-group">
+                    <label>Select Category</label>
+                    <div>
+                        <select onchange="CategoryChanged()" id="lstCategories" class="form-control">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">                     <label>Select Product</label>
+                    <div>
+                        <select onchange="ProductChanged()" id="lstProducts" class="form-control">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Preview</label>
+                    <div class="card">
+                        <div class="card-header">                             <h3 id="lblName"></h3>                         </div>
+                        <div class="card-body">
+                            <img id="imgProduct" width="100%" height="200">
+                            <div>                                 <h3 id="lblPrice"></h3>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-danger btn-block" onclick="AddToCartClick()"> <span class="fa fa-shopping-cart" ></span> 
+Add to Cart </button>
+                        </div>
+                    </div>
+                </div>
+            </div>             <div class="col-6">
+            </div>
+            <div class="col-3">
+                <button  data-target="#shoppingCart" datatoggle="modal" class="btn btn-danger btn-block"> <span class="fa fashopping-basket"></span> [<span id="lblCount"></span>] Your Cart Items 
+</button>
+            </div>
+          </div>
+      </section>
+      <div class="modal fade" id="shoppingCart">
+         <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Your Cart Items</h3>
+                    <button data-dismiss="modal" class="close">X</button>                 </div>
+                <div class="modal-body">                     <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>                                 <th>Preview</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btnsuccess">OK</button>                 </div>
+            </div>
+         </div>
+      </div>
+    </body>
+</html>
